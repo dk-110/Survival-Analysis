@@ -11,15 +11,62 @@ execute:
 ```{r}
 # Load libraries
 library(readr)
+library(survival)
+library(survminer)
 library(dplyr)
+library(forcats)
 library(stringr) # needed for str_replace_all
 
 # Load the clinical data
-clinical_clean <- readRDS("clinical_clean.rds")
+clinical <- read_tsv("clinical.tsv")
+show_col_types = FALSE
 ```
 
 ```{r}
+# Clean and tidy the data
+clinical_clean <- clinical %>%
+  # 1. Convert factor to character for cleaning
+  mutate(across(where(is.factor), as.character)) %>%
+ 
+  # 2. Replace '--' (and extra quotes/whitespace) with NA
+  mutate(across(where(is.character), ~ na_if(str_replace_all(.x, "[`'\"]", "") %>% trimws(), "--"))) %>%
+ 
+  # 3. Convert yes/no text to logical
+  mutate(treatments.treatment_or_therapy = case_when(
+    treatments.treatment_or_therapy %in% c("yes", "Yes", "TRUE", TRUE) ~ TRUE,
+    treatments.treatment_or_therapy %in% c("no", "No", "FALSE", FALSE) ~ FALSE,
+    TRUE ~ NA
+  )) %>%
+ 
+  # 4. Drop unnecessary or duplicate columns
+  select(-matches("\\.\\.\\.")) %>%
+  select(where(~ n_distinct(., na.rm = TRUE) > 1)) %>%
+ 
+  # 5. Remove duplicate rows
+  distinct() %>%
+ 
+  # 6. Convert cleaned characters back to factors
+  mutate(across(where(is.character), as.factor))
 
+```
+
+```{r}
+# Create survival_time and event variables
+# If patient is dead, use days_to_death
+#If patient is alive, use days_to_last_follow_up
+#event: 1 if vital_status == "Dead" and 0 if vital_status == "Alive"
+# Create survival time and event columns
+clinical_clean <- clinical_clean %>%
+  mutate(
+    survival_time = ifelse(
+      as.character(demographic.vital_status) == "Dead",
+      as.numeric(as.character(demographic.days_to_death)),
+      as.numeric(diagnoses.days_to_last_follow_up)
+    ),
+    event = ifelse(as.character(demographic.vital_status) == "Dead", 1, 0),
+    survival_years = survival_time / 365
+  )
+```
 
 
 ```{r}
@@ -59,5 +106,4 @@ p <- ggplot(plot_data, aes(
 ggplotly(p, tooltip = "text")
 
 ```
-
-
+This interactive plot visualizes patient-level survival data from the Genomic Data Commons (GDC) clinical dataset for Acute Myeloid Leukemia (AML). Each dot represents an individual patient, with survival time in years on the x-axis and treatment outcome on the y-axis. The color indicates gender, and hovering over each point reveals details like gender, survival duration, and outcome. The plot includes patients with reported outcomes like Complete Response and Progressive Disease, as well as those with missing or unreported treatment outcomes, labeled as Not Reported. This inclusion gives a more realistic view of clinical data, highlighting that not all cases are fully documented. Overall, the plot reveals that patients with a complete response generally live longer, while those with progressive disease tend to have shorter survival. By combining interactivity with demographic context, this visualization offers an engaging way to explore how treatment outcomes relate to patient survival in real-world AML cases.

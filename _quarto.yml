@@ -9,8 +9,7 @@ website:
         text: Home
 
       - about.qmd
-      - href: kaplan-meier survival curve.qmd
-        text: Home
+    
 
 format:
   html:
