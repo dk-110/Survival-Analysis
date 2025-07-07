@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.31">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Survival Analysis of Acute Myeloid Leukemia (AML) Patients</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-dfb324f25d9b1687192fa8be62ac8f9c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<link href="site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+
+<script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+
+<script src="site_libs/plotly-binding-4.11.0/plotly.js"></script>
+
+<script src="site_libs/typedarray-0.1/typedarray.min.js"></script>
+
+<script src="site_libs/jquery-3.5.1/jquery.min.js"></script>
+
+<link href="site_libs/crosstalk-1.2.1/css/crosstalk.min.css" rel="stylesheet">
+
+<script src="site_libs/crosstalk-1.2.1/js/crosstalk.min.js"></script>
+
+<link href="site_libs/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet">
+
+<script src="site_libs/plotly-main-2.11.1/plotly-latest.min.js"></script>
+
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Survival Analysis of Acute Myeloid Leukemia (AML) Patients</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="./index.html" aria-current="page"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Survival Analysis of Acute Myeloid Leukemia (AML) Patients</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="cell">
+<div class="cell-output-display">
+<div class="plotly html-widget html-fill-item" id="htmlwidget-b3baad8cbc437bd86eaa" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-b3baad8cbc437bd86eaa">{"x":{"data":[{"x":[5.5726027397260278,5.5726027397260278,5.5726027397260278,5.5726027397260278,5.5726027397260278,1.2876712328767124,1.2876712328767124,1.2876712328767124,1.2876712328767124,1.2876712328767124,0.038356164383561646,0.038356164383561646,0.038356164383561646,0.038356164383561646,0.8904109589041096,0.8904109589041096,0.8904109589041096,0.8904109589041096,0.8904109589041096,8.9342465753424651,8.9342465753424651,8.9342465753424651,8.9342465753424651,8.9342465753424651,4.5753424657534243,4.5753424657534243,4.5753424657534243,4.5753424657534243,1.5342465753424657,1.5342465753424657,1.5342465753424657,1.5342465753424657,3.3123287671232875,3.3123287671232875,3.3123287671232875,3.3123287671232875,0.21095890410958903,0.21095890410958903,0.21095890410958903,0.21095890410958903,0.21095890410958903,6.3287671232876717,6.3287671232876717,6.3287671232876717,6.3287671232876717,6.3287671232876717,2.6630136986301371,2.6630136986301371,2.6630136986301371,2.6630136986301371,2.6630136986301371,3.3945205479452056,3.3945205479452056,3.3945205479452056,3.3945205479452056,6.4383561643835616,6.4383561643835616,6.4383561643835616,6.4383561643835616,0.098630136986301367,0.098630136986301367,0.098630136986301367,0.098630136986301367,0.098630136986301367,1.3205479452054794,1.3205479452054794,1.3205479452054794,1.3205479452054794,7.4657534246575343,7.4657534246575343,7.4657534246575343,7.4657534246575343,7.4657534246575343,0.44931506849315067,0.44931506849315067,0.44931506849315067,0.44931506849315067,3.4794520547945207,3.4794520547945207,3.4794520547945207,3.4794520547945207,0.057534246575342465,0.057534246575342465,0.057534246575342465,0.057534246575342465,5.5013698630136982,5.5013698630136982,5.5013698630136982,5.5013698630136982,5.5013698630136982,1.1095890410958904,1.1095890410958904,1.1095890410958904,1.1095890410958904,1.1095890410958904,5.2054794520547949,5.2054794520547949,5.2054794520547949,5.2054794520547949,5.2054794520547949,5.5424657534246577,5.5424657534246577,5.5424657534246577,5.5424657534246577,4.8958904109589039,4.8958904109589039,4.8958904109589039,4.8958904109589039,4.8958904109589039,6.0027397260273974,6.0027397260273974,6.0027397260273974,6.0027397260273974,6.0027397260273974,1.8630136986301369,1.8630136986301369,1.8630136986301369,1.8630136986301369,0.17534246575342466,0.17534246575342466,0.17534246575342466,0.17534246575342466,7.2657534246575342,7.2657534246575342,7.2657534246575342,7.2657534246575342,5.7287671232876711,5.7287671232876711,5.7287671232876711,5.7287671232876711,5.7287671232876711,10.863013698630137,10.863013698630137,10.863013698630137,10.863013698630137,1.2904109589041095,1.2904109589041095,1.2904109589041095,1.2904109589041095,1.2904109589041095,0.21095890410958903,0.21095890410958903,0.21095890410958903,0.21095890410958903,6.0410958904109586,6.0410958904109586,6.0410958904109586,6.0410958904109586,6.0410958904109586,3.0602739726027397,3.0602739726027397,3.0602739726027397,3.0602739726027397,1.0684931506849316,1.0684931506849316,1.0684931506849316,1.0684931506849316,1.0684931506849316,0.49863013698630138,0.49863013698630138,0.49863013698630138,0.49863013698630138,1.0575342465753426,1.0575342465753426,1.0575342465753426,1.0575342465753426,3.9452054794520546,3.9452054794520546,3.9452054794520546,3.9452054794520546,0.57260273972602738,0.57260273972602738,0.57260273972602738,0.57260273972602738,8.1506849315068486,8.1506849315068486,8.1506849315068486,8.1506849315068486,8.1506849315068486,6.3726027397260276,6.3726027397260276,6.3726027397260276,6.3726027397260276,6.0027397260273974,6.0027397260273974,6.0027397260273974,6.0027397260273974,6.0027397260273974,3.0630136986301371,3.0630136986301371,3.0630136986301371,3.0630136986301371,3.0630136986301371,7.3369863013698629,7.3369863013698629,7.3369863013698629,7.3369863013698629,7.3369863013698629,6.6273972602739724,6.6273972602739724,6.6273972602739724,6.6273972602739724,3.6000000000000001,3.6000000000000001,3.6000000000000001,3.6000000000000001,0.83013698630136989,0.83013698630136989,1.6986301369863013,1.6986301369863013,1.6986301369863013,1.6986301369863013,0.51506849315068493,0.51506849315068493,0.51506849315068493,0.51506849315068493,0.51506849315068493],"y":[1.0181685259565711,3.1016331495717169,3.0738732572644949,2.875401396304369,0.8849191967397928,2.836845253780484,0.87859823796898129,2.8727099380455909,2.9547568460926414,1.0509109647013246,2.8752310737036169,2.964022208377719,2.1947518986649812,1.9108161468990148,3.0319816410541534,1.8182628994807601,2.9907124557532372,3.0029239432886241,1.0861604830250144,2.9474258711561561,1.0825034615583717,0.99788505565375085,2.848939990065992,3.1772031601518393,0.96283981269225483,1.0314023617655039,2.9128397973254323,3.1535195825621485,0.94174483772367235,3.1144486357457937,3.0940310947597025,0.88632016582414508,1.8705157113261521,3.1709149361588063,0.80670581981539724,2.9592721764929593,2.8144595820456741,1.9147236585617065,3.1403498191386463,3.0468039876781403,2.8212098381482065,1.1829675865359603,1.1270566605031491,3.0395869370549917,3.068248521722853,2.9353273482061923,1.0143584274686872,0.95504098255187275,3.1824732374399902,3.0948680455796422,2.9922465088777246,2.8806434040889144,1.8210752947255968,3.1339438467286529,1.8883884611539543,0.9273144254460931,2.8065400108695031,3.1262093025259672,0.93111402140930299,3.1788245633244516,3.0209381418302654,3.0657180874608456,3.0716554732061923,2.8260971538722517,2.9474485499784349,2.9086936852894723,2.0733817908912897,1.0194219316355884,3.0241873599588871,1.944633506052196,2.1686337972059846,2.9535071316175161,2.8829661054536699,1.1062563429586589,3.1283374626189469,1.0872531128115952,2.9669766098260881,0.93639040496200321,1.1344530937261879,3.0283114269375799,3.1449913559481502,3.1061433693394065,2.9979871021583677,3.1592001599259674,3.0457716638222339,0.97434626566246152,2.8888802374713123,3.1603417322970926,2.8592198552563786,1.0835995721630751,2.8495110241696238,3.1079794986173512,0.9289201932959259,2.1259358946233986,3.0658785371109842,3.1620967062190175,1.1605533090420068,3.1737505254335701,3.0911381212994455,1.0800366974435747,3.0676683732308447,1.870444714743644,1.0551559113897384,3.1294325787574051,3.1100070107728244,2.906313383858651,1.0697236228734255,1.0873642890714108,2.9749768455512822,3.1071110269986093,3.0363590234890578,3.044986377283931,1.8377180278301239,0.97283289497718217,2.9124683536589147,0.83205699790269139,3.0787600942887368,1.117905055359006,2.8316690618172289,2.861650856770575,1.095018254313618,2.8118882197886705,1.8528462471440434,3.1364169319160284,1.8309633003547787,2.9785290935076771,3.0149357285350562,2.0293249527923765,1.9306145050562917,2.8864388606511056,2.9650322508066891,2.0748129701241851,2.9956461627967657,2.8633707766421139,2.1777964410372079,3.0877568545751273,2.8636538292281331,1.834666882827878,2.8292697967030107,1.0868063922040165,2.97254843628034,2.0540364784188569,3.0410937070846558,2.9292210602201521,0.87695089522749181,1.1897149733267725,2.9747792717069386,3.0183932142332197,2.8226067475974559,1.9923957813531161,1.8978775373660028,2.8681383734568953,2.8304149615578353,3.0133174878545104,2.9904359784908592,0.96107523087412117,3.1066554866731169,1.0896563357673585,1.0557243823073805,2.9573829312808813,3.1021828234195707,1.0396965553984046,1.1809964862652123,2.1431366470642388,2.8174734043888749,2.8352954847738148,2.891553229559213,3.1426839634776114,1.1938940540887415,1.1360638218000532,1.0212547048926353,2.9202470217831431,1.0877244467847049,3.1357540606521068,3.1184633509255946,1.0673786235041915,2.8514060532674192,1.1309289162047207,2.9877625199034812,3.0257932428270577,0.86771527202799914,1.8463552447967231,2.984508033003658,2.0581878909841178,0.9581418507732451,2.8919341810978949,3.1024654989130793,3.0706213884986937,3.1588640857487915,1.1001403770409524,3.15213152365759,0.89334136461839075,2.9044537681154905,2.9948250825516878,2.820249709673226,2.8251322957687082,0.83114377679303286,2.024095973931253,1.0195465341210366,2.9258562406525015,1.9706160383298994,2.9988490295596422,0.85807671425864096,2.9368710754439236,3.131750260014087,0.95445687584578986,2.8931751303374766,2.8250236000865696,2.840416451264173,3.0327206991612909,0.91543234633281823,1.1547261505387723,2.1552607499063017,1.8656445134431123,3.0912710079923271,2.8410823816433548,2.891097241733223],"text":["Gender: female <br>Survival (years): 5.57 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 5.57 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 5.57 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 5.57 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 5.57 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 1.29 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 1.29 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 1.29 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 1.29 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 1.29 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 0.04 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 0.04 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 0.04 <br>Outcome: Unknown","Gender: female <br>Survival (years): 0.04 <br>Outcome: Unknown","Gender: female <br>Survival (years): 0.89 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 0.89 <br>Outcome: Unknown","Gender: female <br>Survival (years): 0.89 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 0.89 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 0.89 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 8.93 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 8.93 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 8.93 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 8.93 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 8.93 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 4.58 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 4.58 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 4.58 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 4.58 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 1.53 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 1.53 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 1.53 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 1.53 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 3.31 <br>Outcome: Unknown","Gender: female <br>Survival (years): 3.31 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 3.31 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 3.31 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 0.21 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 0.21 <br>Outcome: Unknown","Gender: female <br>Survival (years): 0.21 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 0.21 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 0.21 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 6.33 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 6.33 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 6.33 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 6.33 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 6.33 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 2.66 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 2.66 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 2.66 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 2.66 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 2.66 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 3.39 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 3.39 <br>Outcome: Unknown","Gender: female <br>Survival (years): 3.39 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 3.39 <br>Outcome: Unknown","Gender: female <br>Survival (years): 6.44 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 6.44 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 6.44 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 6.44 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 0.1 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 0.1 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 0.1 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 0.1 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 0.1 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 1.32 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 1.32 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 1.32 <br>Outcome: Unknown","Gender: female <br>Survival (years): 1.32 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 7.47 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 7.47 <br>Outcome: Unknown","Gender: female <br>Survival (years): 7.47 <br>Outcome: Unknown","Gender: female <br>Survival (years): 7.47 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 7.47 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 0.45 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 0.45 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 0.45 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 0.45 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 3.48 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 3.48 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 3.48 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 3.48 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 0.06 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 0.06 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 0.06 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 0.06 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 5.5 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 5.5 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 5.5 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 5.5 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 5.5 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 1.11 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 1.11 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 1.11 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 1.11 <br>Outcome: Unknown","Gender: female <br>Survival (years): 1.11 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 5.21 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 5.21 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 5.21 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 5.21 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 5.21 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 5.54 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 5.54 <br>Outcome: Unknown","Gender: female <br>Survival (years): 5.54 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 5.54 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 4.9 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 4.9 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 4.9 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 4.9 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 4.9 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 6 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 6 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 6 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 6 <br>Outcome: Unknown","Gender: female <br>Survival (years): 6 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 1.86 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 1.86 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 1.86 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 1.86 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 0.18 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 0.18 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 0.18 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 0.18 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 7.27 <br>Outcome: Unknown","Gender: female <br>Survival (years): 7.27 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 7.27 <br>Outcome: Unknown","Gender: female <br>Survival (years): 7.27 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 5.73 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 5.73 <br>Outcome: Unknown","Gender: female <br>Survival (years): 5.73 <br>Outcome: Unknown","Gender: female <br>Survival (years): 5.73 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 5.73 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 10.86 <br>Outcome: Unknown","Gender: female <br>Survival (years): 10.86 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 10.86 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 10.86 <br>Outcome: Unknown","Gender: female <br>Survival (years): 1.29 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 1.29 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 1.29 <br>Outcome: Unknown","Gender: female <br>Survival (years): 1.29 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 1.29 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 0.21 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 0.21 <br>Outcome: Unknown","Gender: female <br>Survival (years): 0.21 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 0.21 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 6.04 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 6.04 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 6.04 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 6.04 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 6.04 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 3.06 <br>Outcome: Unknown","Gender: female <br>Survival (years): 3.06 <br>Outcome: Unknown","Gender: female <br>Survival (years): 3.06 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 3.06 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 1.07 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 1.07 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 1.07 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 1.07 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 1.07 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 0.5 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 0.5 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 0.5 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 0.5 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 1.06 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 1.06 <br>Outcome: Unknown","Gender: female <br>Survival (years): 1.06 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 1.06 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 3.95 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 3.95 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 3.95 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 3.95 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 0.57 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 0.57 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 0.57 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 0.57 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 8.15 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 8.15 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 8.15 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 8.15 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 8.15 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 6.37 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 6.37 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 6.37 <br>Outcome: Unknown","Gender: female <br>Survival (years): 6.37 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 6 <br>Outcome: Unknown","Gender: female <br>Survival (years): 6 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 6 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 6 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 6 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 3.06 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 3.06 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 3.06 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 3.06 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 3.06 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 7.34 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 7.34 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 7.34 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 7.34 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 7.34 <br>Outcome: Unknown","Gender: female <br>Survival (years): 6.63 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 6.63 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 6.63 <br>Outcome: Unknown","Gender: female <br>Survival (years): 6.63 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 3.6 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 3.6 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 3.6 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 3.6 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 0.83 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 0.83 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 1.7 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 1.7 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 1.7 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 1.7 <br>Outcome: Complete Response","Gender: female <br>Survival (years): 0.52 <br>Outcome: Unknown","Gender: female <br>Survival (years): 0.52 <br>Outcome: Unknown","Gender: female <br>Survival (years): 0.52 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 0.52 <br>Outcome: Not Reported","Gender: female <br>Survival (years): 0.52 <br>Outcome: Not Reported"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(248,118,109,1)","opacity":0.69999999999999996,"size":7.559055118110237,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(248,118,109,1)"}},"hoveron":"points","name":"female","legendgroup":"female","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[0.66301369863013704,0.66301369863013704,0.66301369863013704,0.66301369863013704,0.66301369863013704,4.3726027397260276,4.3726027397260276,4.3726027397260276,4.3726027397260276,4.3726027397260276,4.5945205479452058,4.5945205479452058,4.5945205479452058,4.5945205479452058,5.0821917808219181,5.0821917808219181,5.0821917808219181,5.0821917808219181,2.9835616438356163,2.9835616438356163,2.9835616438356163,2.9835616438356163,7.3260273972602743,7.3260273972602743,7.3260273972602743,7.3260273972602743,7.3260273972602743,1.5863013698630137,1.5863013698630137,1.5863013698630137,1.5863013698630137,1.1369863013698631,1.1369863013698631,1.1369863013698631,1.1369863013698631,1.0301369863013699,1.0301369863013699,1.0301369863013699,1.0301369863013699,8.5287671232876718,8.5287671232876718,8.5287671232876718,8.5287671232876718,8.5287671232876718,5.6712328767123283,5.6712328767123283,5.6712328767123283,5.6712328767123283,6.7232876712328764,6.7232876712328764,6.7232876712328764,6.7232876712328764,6.7232876712328764,1.0767123287671232,1.0767123287671232,1.0767123287671232,1.0767123287671232,1.0767123287671232,1.8136986301369864,1.8136986301369864,1.8136986301369864,1.8136986301369864,1.1726027397260275,1.1726027397260275,1.1726027397260275,1.1726027397260275,1.1726027397260275,2.5726027397260274,2.5726027397260274,2.5726027397260274,2.5726027397260274,7.7287671232876711,7.7287671232876711,7.7287671232876711,7.7287671232876711,7.7287671232876711,2.547945205479452,2.547945205479452,2.547945205479452,2.547945205479452,5.0410958904109586,5.0410958904109586,5.0410958904109586,5.0410958904109586,6.506849315068493,6.506849315068493,6.506849315068493,6.506849315068493,6.506849315068493,1.010958904109589,1.010958904109589,1.010958904109589,1.010958904109589,1.010958904109589,1.7232876712328766,1.7232876712328766,1.7232876712328766,1.7232876712328766,4.7506849315068491,4.7506849315068491,4.7506849315068491,4.7506849315068491,0.58356164383561648,0.58356164383561648,0.58356164383561648,0.58356164383561648,3.5671232876712327,3.5671232876712327,3.5671232876712327,3.5671232876712327,0.082191780821917804,0.082191780821917804,3.8219178082191783,3.8219178082191783,3.8219178082191783,3.8219178082191783,5.7999999999999998,5.7999999999999998,5.7999999999999998,5.7999999999999998,5.7999999999999998,6.3863013698630136,6.3863013698630136,6.3863013698630136,6.3863013698630136,3.536986301369863,3.536986301369863,3.536986301369863,3.536986301369863,2.7397260273972601,2.7397260273972601,2.7397260273972601,2.7397260273972601,2.7397260273972601,0.67671232876712328,0.67671232876712328,0.67671232876712328,0.67671232876712328,6.021917808219178,6.021917808219178,6.021917808219178,6.021917808219178,6.021917808219178,5.3835616438356162,5.3835616438356162,5.3835616438356162,5.3835616438356162,5.3835616438356162,5.0383561643835613,5.0383561643835613,5.0383561643835613,5.0383561643835613,0.56438356164383563,0.56438356164383563,0.56438356164383563,0.56438356164383563,6.624657534246575,6.624657534246575,6.624657534246575,6.624657534246575,3.3123287671232875,3.3123287671232875,3.3123287671232875,3.3123287671232875,5.3150684931506849,5.3150684931506849,5.3150684931506849,5.3150684931506849,5.3150684931506849,3.3452054794520549,3.3452054794520549,3.3452054794520549,3.3452054794520549,6.3671232876712329,6.3671232876712329,6.3671232876712329,6.3671232876712329,1.2082191780821918,1.2082191780821918,1.2082191780821918,1.2082191780821918,6.3917808219178083,6.3917808219178083,6.3917808219178083,6.3917808219178083,0.25479452054794521,0.25479452054794521,0.25479452054794521,0.25479452054794521,0.75342465753424659,0.75342465753424659,0.75342465753424659,0.75342465753424659,1.2027397260273973,1.2027397260273973,1.2027397260273973,1.2027397260273973,1.2027397260273973,1.0520547945205478,1.0520547945205478,1.0520547945205478,1.0520547945205478,7.5287671232876709,7.5287671232876709,7.5287671232876709,7.5287671232876709,7.5287671232876709,1.6657534246575343,1.6657534246575343,1.6657534246575343,1.6657534246575343,1.6657534246575343],"y":[2.851938845589757,2.8509751847945153,2.9603164021857085,1.1416732740588487,1.1099307863041759,3.0355617714114489,1.1862349620088934,1.9876522974111139,2.9193380721844733,2.9510895702987909,2.983749238215387,1.0781654948368669,2.9596661712974308,1.0717306164093316,0.98534123823046682,0.87226803218945859,3.0767571884207428,3.0790506441146137,1.8032198455184698,2.99926818292588,1.1359211886301637,2.8274518872611223,2.9645988681353628,2.9602142005227505,0.87581793954595921,0.97979433573782448,2.8504306288436054,3.0361029939725994,1.1904435479082167,3.1223645084537566,1.1835124106146395,1.001781550515443,3.1378106830641626,3.1101598892360927,0.95701369782909751,1.9047617956995964,2.1666108169592917,3.0524572134949266,3.0581410244107246,1.0050561699084937,2.8755263786762955,3.0753711400553585,1.1238237121142447,3.0495649253018202,2.8119595911353827,2.9390687921084462,1.1566254523582757,1.9252120482735335,2.9761153150349857,3.1391865267418324,1.1204572976566851,2.9521813955157996,0.98214140981435771,0.94064184343442325,3.0583050551824273,2.9925147488713266,3.0173073515295981,1.1703088373877109,3.1584259695373476,3.0330185801722109,1.0894589440897107,0.81397679056972261,2.8390452705323694,1.1887230662629009,3.161324956640601,0.9552203519269824,2.9029459792189298,3.1698524090461433,2.9390930091030896,1.1805037123151123,1.0461252687498928,0.94623421030119059,2.8504178388975561,2.9343470046296716,1.1545805198140442,3.1035478038713338,3.0305208245292308,2.8307206163182856,0.99489071983844046,1.1681568623520433,2.807276228070259,0.812603407446295,3.1578211658634245,0.80742807919159532,2.0850469800643623,2.990594299323857,2.868228238914162,2.9041015526279805,1.0575606894679368,2.1688685322180392,1.829506835527718,2.8818716149777175,2.981522858887911,3.0128845685161649,1.0009124171920121,3.0156228095293045,0.82077351249754427,2.9620352249592541,2.8240317399613559,0.99481153041124348,3.0934415771625936,1.119653263501823,2.1799507644027472,1.9170953852124513,3.1838372378610074,3.1530952172353865,3.1966192591935396,1.0186843347735703,3.0073823153041301,1.0291413551196456,3.0386088275350631,2.8258371168747543,3.0922635828144847,3.19229951268062,1.1435311526060103,0.93276018351316448,1.073076515737921,2.8080852918326853,2.9792596715502442,2.9091667689383032,0.99756909497082236,0.98102262504398818,0.97032308066263795,2.8145158099941909,3.0383128197863698,3.0741644865833222,1.0045210081152618,1.1306357435882091,3.1779022803530097,1.9212382325902582,3.0559294972568751,2.8077711394056677,2.8173051325604321,1.9545812540687622,2.9977585643529894,2.8428452876396477,1.1026817144826055,0.91860333215445278,0.91966398153454065,2.8646337158977984,2.8144273335114121,3.1193846818991005,1.163135651499033,3.0605159420520067,0.87462606709450486,2.9526395139284434,1.87684659473598,3.0473354080691935,1.1047802339307964,2.1302960449829698,2.8899802546016873,2.9758667900227009,1.1054619177244605,2.826627288479358,0.8746475392021239,2.8022444201633334,3.0050991441123189,1.0041751820594071,0.86389527274295685,2.9172249883413315,1.9963481543585657,3.1305444290861488,0.92893598368391395,3.1593077576719226,2.8768851241096853,0.9370562869124115,2.834144972730428,0.9961934856139123,3.1377641609869897,1.1871489020064474,2.9872181359678507,2.9229077394120395,0.96030049044638877,3.1125593798235061,1.0100143363699317,2.9540399684570731,1.1916174673475326,1.1648155933246016,2.961590429302305,1.1145456803031266,2.8455098193138837,3.0152266986668108,2.921736809145659,1.1040133813396096,1.1827421312220394,3.0937922380864622,2.833263257704675,1.9559466753154993,0.84836566122248769,3.1551249688491225,3.0328841553069652,1.117666670680046,0.87051273155957465,2.8734349122270944,1.1682169128209352,2.8312241735868158,3.1357940319925546,0.99235396496951578,2.8968316913582384,0.86786962598562245,1.0583287853747607,2.9923764873296022,3.0030323307029905,2.9926039959304034,1.1663010656833648,0.87128771627321844,3.1451960175298153,3.1734214484691621,2.8288231927901508,3.0297759098000823,0.97517244545742865,1.0771445356309415],"text":["Gender: male <br>Survival (years): 0.66 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 0.66 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 0.66 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 0.66 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 0.66 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 4.37 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 4.37 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 4.37 <br>Outcome: Unknown","Gender: male <br>Survival (years): 4.37 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 4.37 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 4.59 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 4.59 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 4.59 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 4.59 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 5.08 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 5.08 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 5.08 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 5.08 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 2.98 <br>Outcome: Unknown","Gender: male <br>Survival (years): 2.98 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 2.98 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 2.98 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 7.33 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 7.33 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 7.33 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 7.33 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 7.33 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 1.59 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 1.59 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 1.59 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 1.59 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 1.14 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 1.14 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 1.14 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 1.14 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 1.03 <br>Outcome: Unknown","Gender: male <br>Survival (years): 1.03 <br>Outcome: Unknown","Gender: male <br>Survival (years): 1.03 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 1.03 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 8.53 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 8.53 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 8.53 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 8.53 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 8.53 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 5.67 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 5.67 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 5.67 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 5.67 <br>Outcome: Unknown","Gender: male <br>Survival (years): 6.72 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 6.72 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 6.72 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 6.72 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 6.72 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 1.08 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 1.08 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 1.08 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 1.08 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 1.08 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 1.81 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 1.81 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 1.81 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 1.81 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 1.17 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 1.17 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 1.17 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 1.17 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 1.17 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 2.57 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 2.57 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 2.57 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 2.57 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 7.73 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 7.73 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 7.73 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 7.73 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 7.73 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 2.55 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 2.55 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 2.55 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 2.55 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 5.04 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 5.04 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 5.04 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 5.04 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 6.51 <br>Outcome: Unknown","Gender: male <br>Survival (years): 6.51 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 6.51 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 6.51 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 6.51 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 1.01 <br>Outcome: Unknown","Gender: male <br>Survival (years): 1.01 <br>Outcome: Unknown","Gender: male <br>Survival (years): 1.01 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 1.01 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 1.01 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 1.72 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 1.72 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 1.72 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 1.72 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 4.75 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 4.75 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 4.75 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 4.75 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 0.58 <br>Outcome: Unknown","Gender: male <br>Survival (years): 0.58 <br>Outcome: Unknown","Gender: male <br>Survival (years): 0.58 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 0.58 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 3.57 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 3.57 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 3.57 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 3.57 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 0.08 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 0.08 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 3.82 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 3.82 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 3.82 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 3.82 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 5.8 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 5.8 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 5.8 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 5.8 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 5.8 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 6.39 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 6.39 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 6.39 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 6.39 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 3.54 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 3.54 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 3.54 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 3.54 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 2.74 <br>Outcome: Unknown","Gender: male <br>Survival (years): 2.74 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 2.74 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 2.74 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 2.74 <br>Outcome: Unknown","Gender: male <br>Survival (years): 0.68 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 0.68 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 0.68 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 0.68 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 6.02 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 6.02 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 6.02 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 6.02 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 6.02 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 5.38 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 5.38 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 5.38 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 5.38 <br>Outcome: Unknown","Gender: male <br>Survival (years): 5.38 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 5.04 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 5.04 <br>Outcome: Unknown","Gender: male <br>Survival (years): 5.04 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 5.04 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 0.56 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 0.56 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 0.56 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 0.56 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 6.62 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 6.62 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 6.62 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 6.62 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 3.31 <br>Outcome: Unknown","Gender: male <br>Survival (years): 3.31 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 3.31 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 3.31 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 5.32 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 5.32 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 5.32 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 5.32 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 5.32 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 3.35 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 3.35 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 3.35 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 3.35 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 6.37 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 6.37 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 6.37 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 6.37 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 1.21 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 1.21 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 1.21 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 1.21 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 6.39 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 6.39 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 6.39 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 6.39 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 0.25 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 0.25 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 0.25 <br>Outcome: Unknown","Gender: male <br>Survival (years): 0.25 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 0.75 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 0.75 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 0.75 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 0.75 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 1.2 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 1.2 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 1.2 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 1.2 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 1.2 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 1.05 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 1.05 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 1.05 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 1.05 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 7.53 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 7.53 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 7.53 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 7.53 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 7.53 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 1.67 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 1.67 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 1.67 <br>Outcome: Not Reported","Gender: male <br>Survival (years): 1.67 <br>Outcome: Complete Response","Gender: male <br>Survival (years): 1.67 <br>Outcome: Complete Response"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(0,191,196,1)","opacity":0.69999999999999996,"size":7.559055118110237,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(0,191,196,1)"}},"hoveron":"points","name":"male","legendgroup":"male","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":43.762557077625573,"r":7.3059360730593621,"b":40.182648401826491,"l":124.9315068493151},"font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"title":{"text":"Survival by Treatment Outcome (Including Unknown)","font":{"color":"rgba(0,0,0,1)","family":"","size":17.534246575342465},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-0.50287671232876718,11.404246575342466],"tickmode":"array","ticktext":["0","3","6","9"],"tickvals":[0,3,6.0000000000000009,9],"categoryorder":"array","categoryarray":["0","3","6","9"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"y","title":{"text":"Survival Time (Years)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.40000000000000002,3.6000000000000001],"tickmode":"array","ticktext":["Complete Response","Unknown","Not Reported"],"tickvals":[1,2,3],"categoryorder":"array","categoryarray":["Complete Response","Unknown","Not Reported"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"x","title":{"text":"Treatment Outcome","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","layer":"below","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498},"title":{"text":"Gender","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"2048f6f72b6":{"x":{},"y":{},"colour":{},"text":{},"type":"scatter"}},"cur_data":"2048f6f72b6","visdat":{"2048f6f72b6":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<p>This interactive plot visualizes patient-level survival data from the Genomic Data Commons (GDC) clinical dataset for Acute Myeloid Leukemia (AML). Each dot represents an individual patient, with survival time in years on the x-axis and treatment outcome on the y-axis. The color indicates gender, and hovering over each point reveals details like gender, survival duration, and outcome. The plot includes patients with reported outcomes like Complete Response and Progressive Disease, as well as those with missing or unreported treatment outcomes, labeled as Not Reported. This inclusion gives a more realistic view of clinical data, highlighting that not all cases are fully documented. Overall, the plot reveals that patients with a complete response generally live longer, while those with progressive disease tend to have shorter survival. By combining interactivity with demographic context, this visualization offers an engaging way to explore how treatment outcomes relate to patient survival in real-world AML cases.</p>
+
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

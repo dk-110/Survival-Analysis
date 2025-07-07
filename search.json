@@ -1,0 +1,16 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Survival Analysis of Acute Myeloid Leukemia (AML) Patients",
+    "section": "",
+    "text": "This interactive plot visualizes patient-level survival data from the Genomic Data Commons (GDC) clinical dataset for Acute Myeloid Leukemia (AML). Each dot represents an individual patient, with survival time in years on the x-axis and treatment outcome on the y-axis. The color indicates gender, and hovering over each point reveals details like gender, survival duration, and outcome. The plot includes patients with reported outcomes like Complete Response and Progressive Disease, as well as those with missing or unreported treatment outcomes, labeled as Not Reported. This inclusion gives a more realistic view of clinical data, highlighting that not all cases are fully documented. Overall, the plot reveals that patients with a complete response generally live longer, while those with progressive disease tend to have shorter survival. By combining interactivity with demographic context, this visualization offers an engaging way to explore how treatment outcomes relate to patient survival in real-world AML cases."
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "Hi! I’m Darakhshan Fatima, and I hold a Master’s degree in Zoology. I chose to explore survival analysis as part of my journey into understanding complex biological and clinical data particularly in the context of cancer research.\nThis website showcases an analysis of real-world clinical data from Acute Myeloid Leukemia (AML) patients, using statistical methods and interactive plots to visualize survival trends and treatment outcomes. By combining my background in life sciences with data analytics, I aim to bridge the gap between biology and data-driven insights.\n\nContact\n📧 darakhshan.fatima110@gmail.com\n🐙 GitHub: dk-110\n🎓 Course Homepage: Kane’s Free Data Science Bootcamp"
+  }
+]
