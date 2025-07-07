@@ -1,0 +1,46 @@
+---
+title: "Kaplan-Meier Survival Curve for AML Patients"
+format: html
+---
+
+```{r}
+# Build survival object and fit KM model
+surv_obj <- Surv(clinical_clean$survival_years, clinical_clean$event)
+fit_km <- survfit(surv_obj ~ 1)
+
+# Plot
+ggsurvplot(
+  fit_km,
+  data = clinical_clean,
+  conf.int = TRUE,
+  title = "Kaplan-Meier Survival Curve for AML Patients",
+  subtitle = "Estimated survival over time in years",
+  caption = "Source: GDC AML Clinical Dataset",
+  xlab = "Time (Years)",
+  ylab = "Survival Probability (%)",
+  surv.scale = "percent",
+  break.x.by = 1,
+  xlim = c(0, ceiling(max(clinical_clean$survival_years, na.rm = TRUE))),
+  palette = "red",
+  ggtheme = theme_minimal(base_size = 14) +
+    theme(plot.title = element_text(face = "bold"),
+          plot.caption = element_text(face = "italic"))
+)
+```
+The Kaplan-Meier survival curve above illustrates the overall survival probability of patients diagnosed with Acute Myeloid Leukemia (AML) over time. The x-axis represents the time in years since diagnosis or treatment initiation, while the y-axis shows the probability of survival as a percentage. The red curve represents the estimated survival function, with the shaded area indicating the 95% confidence interval. As time progresses, the curve gradually declines, reflecting the decreasing proportion of patients who survive. This analysis provides a visual summary of survival trends within the cohort and is foundational for comparing subgroups, evaluating treatment effects, or estimating median survival time in further analyses.
+
+```{r}
+fit_gender <- survfit(Surv(survival_time, event) ~ demographic.gender, data = clinical_clean)
+
+ggsurvplot(
+  fit_gender, 
+  conf.int = TRUE, 
+  pval = TRUE,
+  legend.title = "Gender",
+  title = "Kaplan-Meier Survival Curve by Gender",
+  xlab = "Time (days)", 
+  ylab = "Survival Probability",
+  palette = c("steelblue", "darkred"),
+  ggtheme = theme_minimal()
+)
+```

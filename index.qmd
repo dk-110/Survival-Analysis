@@ -1,0 +1,63 @@
+---
+title: "Survival Analysis of Acute Myeloid Leukemia (AML) Patients"
+
+execute: 
+  echo: false
+  warning: false
+  message: false
+---
+
+
+```{r}
+# Load libraries
+library(readr)
+library(dplyr)
+library(stringr) # needed for str_replace_all
+
+# Load the clinical data
+clinical_clean <- readRDS("clinical_clean.rds")
+```
+
+```{r}
+
+
+
+```{r}
+library(plotly)
+library(dplyr)
+library(ggplot2)
+
+# Replace NA survival years with a value or label for plotting
+plot_data <- clinical_clean %>%
+  mutate(
+    survival_years_display = ifelse(
+      is.na(survival_years), NA, survival_years
+    ),
+    treatments.treatment_outcome = fct_explicit_na(treatments.treatment_outcome, na_level = "Not Reported")
+  )
+
+# Plot
+p <- ggplot(plot_data, aes(
+  x = survival_years_display,
+  y = treatments.treatment_outcome,
+  color = demographic.gender,
+  text = paste(
+    "Gender:", demographic.gender,
+    "<br>Survival (years):", round(survival_years_display, 2),
+    "<br>Outcome:", treatments.treatment_outcome
+  )
+)) +
+  geom_jitter(width = 0, height = 0.2, alpha = 0.7, size = 2, na.rm = FALSE) +
+  labs(
+    title = "Survival by Treatment Outcome (Including Unknown)",
+    x = "Survival Time (Years)",
+    y = "Treatment Outcome",
+    color = "Gender"
+  ) +
+  theme_minimal()
+
+ggplotly(p, tooltip = "text")
+
+```
+
+
