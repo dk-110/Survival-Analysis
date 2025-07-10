@@ -2,12 +2,15 @@ project:
   type: website
 
 website:
-  title: "Survival Analysis of Acute Myeloid Leukemia (AML) Patients"
+  title: "Survival Analysis of Acute Myeloid Leukemia (AML) Patients by Treatment Outcome"
   navbar:
     left:
       - href: index.qmd
         text: Home
 
+      - href: Sources.qmd
+        text: Sources
+        
       - about.qmd
     
 

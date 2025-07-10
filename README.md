@@ -1,1 +1,3 @@
 # Survival-Analysis
+
+This project visualizes survival outcomes in patients diagnosed with Acute Myeloid Leukemia (AML) using clinical data obtained from the Genomic Data Commons (GDC) portal, an open-access resource maintained by the U.S. National Cancer Institute. The plot displays individual patient data, where survival time (in years) is shown along the X-axis and treatment outcome (e.g., Complete Response, Unknown, Not Reported) on the Y-axis. Each point represents one patient, colored by gender, enabling quick insights into how treatment response correlates with survival. This dataset allows for meaningful exploration of real-world clinical trends in AML research.

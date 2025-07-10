@@ -1,0 +1,8 @@
+---
+title: "Sources"
+format: html
+---
+The clinical data used in this project was obtained from the Genomic Data Commons (GDC), a comprehensive platform managed by the National Cancer Institute (NCI) that provides open access to cancer genomics datasets. Specifically, the dataset focused on Acute Myeloid Leukemia (AML) and includes survival outcomes, treatment responses, and demographic information. This publicly available data supports transparent and reproducible cancer research.
+
+GDC Data Portal:
+https://portal.gdc.cancer.gov</p>
