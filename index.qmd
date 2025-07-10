@@ -1,19 +1,10 @@
-<h2 style="text-align: left;">Project Summary</h2>
-The clinical data used in this project was obtained from the Genomic Data Commons (GDC), a comprehensive platform managed by the National Cancer Institute (NCI) that provides open access to cancer genomics datasets. This interactive plot below visualizes clinical data from patients diagnosed with Acute Myeloid Leukemia (AML) a type of blood cancer. Each dot on the graph represents an individual patient. 
+<h2 style="text-align: left;">
 
--	**X-axis**: Survival time (years) 
-- **Y-axis**: Treatment outcome (*Complete Response*, *Unknown*, or *Not Reported*)  
-- **Dot Color**: Gender of the patient  
+Project Summary
 
-The treatment outcomes include:
+</h2>
 
-- **Complete Response** – meaning the patient responded well to treatment
--	**Unknown** – outcome is unclear or ambiguous
--	**Not Reported** – outcome data is missing from the medical record
-
-The plot helps identify patterns in survival patients with a "Complete Response" often show longer survival durations, while those with "Unknown" or "Not Reported" outcomes tend to have more scattered or shorter survival times. 
-
--	**Reminder** The presence of missing data highlights challenges in analyzing real-world clinical datasets, where not every case is fully documented.
+In this project, we analyzed clinical data from 429 patients diagnosed with Acute Myeloid Leukemia (AML) a type of blood cancer. The dataset was obtained from the Genomic Data Commons (GDC) a comprehensive platform maintained by the National Cancer Institute (NCI) that provides open access to cancer genomics datasets.
 
 <hr style="border: none; border-top: 1px solid #ccc; margin: 1em 0;">
 
@@ -23,10 +14,11 @@ execute:
   warning: false
   message: false
 ---
-<h2 style="text-align: left;">Survival Analysis of Acute Myeloid Leukemia (AML) Patients by Treatment Outcome </h2>
+
 ```{r}
 # Load libraries
 library(readr)
+library(tidyr)
 library(survival)
 library(survminer)
 library(dplyr)
@@ -84,7 +76,6 @@ clinical_clean <- clinical_clean %>%
   )
 ```
 
-
 ```{r}
 library(plotly)
 library(dplyr)
@@ -98,8 +89,46 @@ plot_data <- clinical_clean %>%
     ),
     treatments.treatment_outcome = fct_explicit_na(treatments.treatment_outcome, na_level = "Not Reported")
   )
+```
 
-# Plot
+<h2 style="text-align: left;">
+
+Number of Patients by Treatment Outcome and Gender
+
+</h2>
+
+```{r}
+# Create patient summary with capitalized gender labels
+patient_summary <- clinical_clean %>%
+  mutate(
+    `Treatment Outcome` = fct_explicit_na(treatments.treatment_outcome, na_level = "Not Reported"),
+    Gender = case_when(
+      demographic.gender == "male" ~ "Male",
+      demographic.gender == "female" ~ "Female",
+      TRUE ~ as.character(demographic.gender)
+    )
+  ) %>%
+  group_by(`Treatment Outcome`, Gender) %>%
+  summarise(Count = n(), .groups = "drop") %>%
+  pivot_wider(names_from = Gender, values_from = Count, values_fill = 0) %>%
+  mutate(`Total Patients` = rowSums(across(where(is.numeric)))) %>%
+  arrange(desc(`Total Patients`))
+
+
+# Show as table
+knitr::kable(patient_summary)
+
+```
+
+Before visualizing survival outcomes, we included a summary table that displays the total number of patients by treatment outcome and gender. This table helps contextualize the distribution of treatment responses across male and female patients, while also highlighting the prevalence of missing or unreported treatment outcomes—a common challenge in analyzing real-world clinical datasets.
+
+<h2 style="text-align: left;">
+
+Survival Analysis of Acute Myeloid Leukemia (AML) Patients by Treatment Outcome
+
+</h2>
+
+```{r}
 # Plot
 p <- ggplot(plot_data, aes(
   x = survival_years_display,
@@ -125,10 +154,23 @@ p <- ggplot(plot_data, aes(
     axis.text = element_text(size = 12),
     legend.title = element_text(size = 13, face = "bold")
   )
-
 # Make it interactive
 ggplotly(p, tooltip = "text")
 ```
 
+<br> The interactive plot above visualizes clinical data from patients diagnosed with AML.
 
+-   **Each Dot**: Represents an individual patient
+-   **Dot Color**: Gender of the patient\
+-   **X-axis**: Survival time (years)
+-   **Y-axis**: Treatment outcome (*Complete Response*, *Unknown*, or *Not Reported*)
 
+The treatment outcomes include:
+
+-   **Complete Response** – meaning the patient responded well to treatment
+-   **Unknown** – outcome is unclear or ambiguous
+-   **Not Reported** – outcome data is missing from the medical record
+
+The plot helps identify patterns in survival patients with a "Complete Response" often show longer survival durations, while those with "Unknown" or "Not Reported" outcomes tend to have more scattered or shorter survival times.
+
+-   **Reminder** The presence of missing data highlights challenges in analyzing real-world clinical datasets, where not every case is fully documented.
